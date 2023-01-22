@@ -17,6 +17,22 @@ public class BallScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (transform.position.x < -6) {
+            GameManagerScript.updateScore(0);
+            Destroy(gameObject);
+        }
+        else if (transform.position.x > 6) {
+            GameManagerScript.updateScore(1);
+            Destroy(gameObject);
+        }
+        else if (transform.position.y < -6) {
+            GameManagerScript.updateScore(2);
+            Destroy(gameObject);
+        }
+        else if (transform.position.y > 6) {
+            GameManagerScript.updateScore(3);
+            Destroy(gameObject);
+        }
     }
 
     void move() {
