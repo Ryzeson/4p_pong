@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,9 +8,12 @@ public class PaddleScript : MonoBehaviour
 {
     Vector3 paddleStartXZ;
     Camera mainCamera;
+    public GameObject walls;
 
     void Start()
     {
+        walls = transform.parent.transform.GetChild(4).gameObject;
+
         if (gameObject.tag == "Left") {
             paddleStartXZ = new Vector3(-4.5f, 0, 10f);
         }
@@ -36,6 +40,36 @@ public class PaddleScript : MonoBehaviour
 
     void Update()
     {
+        move();
+
+        checkScore();
+
+        // if(Input.anyKeyDown){
+        //     print(Input.inputString);
+        // }
+    }
+
+    private void checkScore()
+    {
+        if (gameObject.tag == "Left" && GameManagerScript.scores[0] == 0) {
+            Destroy(gameObject);
+            walls.transform.GetChild(0).gameObject.SetActive(true);
+        }
+        if (gameObject.tag == "Right" && GameManagerScript.scores[1] == 0) {
+            Destroy(gameObject);
+            walls.transform.GetChild(1).gameObject.SetActive(true);
+        }
+        if (gameObject.tag == "Bottom" && GameManagerScript.scores[2] == 0) {
+            Destroy(gameObject);
+            walls.transform.GetChild(2).gameObject.SetActive(true);
+        }
+        if (gameObject.tag == "Top" && GameManagerScript.scores[3] == 0) {
+            Destroy(gameObject);
+            walls.transform.GetChild(3).gameObject.SetActive(true);
+        }
+    }
+
+    void move() {
         Vector3 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition); // Camera.main can be used in place of mainCamera
         Vector3 updatePos = Vector3.zero;
         if (gameObject.tag == "Left" || gameObject.tag == "Right") {
@@ -57,11 +91,6 @@ public class PaddleScript : MonoBehaviour
             }
         }
 
-
-            transform.position = updatePos;
-
-        if(Input.anyKeyDown){
-            print(Input.inputString);
-        }
+        transform.position = updatePos;
     }
 }

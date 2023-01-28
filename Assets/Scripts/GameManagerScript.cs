@@ -6,6 +6,7 @@ public class GameManagerScript : MonoBehaviour
 {
     public static GameManagerScript Instance { get; private set; }
     public static int[] scores = new int[4];
+    public static int ballCount = 0;
 
         private void Awake() 
     { 
@@ -29,17 +30,17 @@ public class GameManagerScript : MonoBehaviour
     void Start()
     {
         for (int i = 0; i < scores.Length; i++) {
-            scores[i] = 0;
+            scores[i] = 1;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        // Debug.Log("Num balls: " + ballCount);
     }
 
     public static void updateScore(int player) {
-        scores[player]++;
+        scores[player]--;
     }
 }

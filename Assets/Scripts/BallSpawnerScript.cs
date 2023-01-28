@@ -29,14 +29,19 @@ public class BallSpawnerScript : MonoBehaviour
         if (spawnTime < 0)
         {
             ballSpawnerAnimator.enabled = false;
-            GameObject ballClone = Instantiate(ball, transform.position, Quaternion.identity);
-            ballClone.layer = 3; //"Ball"
-            ballSpeed += .5f;
-            ballClone.GetComponent<BallScript>().speed = ballSpeed;
+            createBall();
             spawnTime = 8f;
         }
         if (spawnTime < clipLength * 3) {
             ballSpawnerAnimator.enabled = true;
         }
+    }
+
+    void createBall() {
+        GameObject ballClone = Instantiate(ball, transform.position, Quaternion.identity);
+        GameManagerScript.ballCount++;
+        ballClone.layer = 3; //"Ball"
+        ballSpeed += .5f;
+        ballClone.GetComponent<BallScript>().speed = ballSpeed;
     }
 }
