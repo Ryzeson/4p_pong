@@ -5,27 +5,46 @@ using UnityEngine;
 public class BallScript : MonoBehaviour
 {
     Rigidbody2D _rigidBody;
+    AudioSource _audioSource;
     Vector2 direction;
     public float speed = 2f;
-    public bool collided = false;
+    public float bounceMult = 3f;
+    public bool[] colWall;
 
     // Start is called before the first frame update
     void Start()
     {
+        colWall = new bool[] {false, false, false, false};
         _rigidBody = GetComponent<Rigidbody2D>();
+        _audioSource = GetComponent<AudioSource>();
         move();
     }
 
     void Update() {
-        if(collided && Input.anyKeyDown){
-            print("double me");
+        checkBounds();
+        checkWallBounce();
+    }
+
+    private void checkWallBounce()
+    {
+        if(colWall[0] && Input.GetKey(KeyCode.A)){
+            bounce(0);
+        }
+        if(colWall[1] && Input.GetKey(KeyCode.S)){
+            bounce(1);
+        }
+        if(colWall[2] && Input.GetKey(KeyCode.D)){
+            bounce(2);
+        }
+        if(colWall[3] && Input.GetKey(KeyCode.F)){
+            bounce(3);
         }
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        checkBounds();
+    void bounce(int wall) {
+        _rigidBody.velocity *= bounceMult;
+        _audioSource.Play();
+        colWall[wall] = false;
     }
 
     void move() {
@@ -63,24 +82,27 @@ public class BallScript : MonoBehaviour
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
-        collided = true;
-        print("true");
         // Debug.Log(collision.collider.name + " collided with " + name);
-        // Debug.Log("Velocity of ball: " + _rigidBody.velocity);
-        // Debug.Log("Direction of ball: " + direction);
         // Debug.Log(collision.collider.transform.parent.tag + " collided with " + name);
 
-        float curSpeed = speed;
         // if it hits a wall and dead player times button, increase ball speed
-        // if (collision.collider.transform.parent.tag == "Wall" && Input.anyKeyDown) {
-        //     curSpeed *= 2;
-        //     print("Doubling speed!");
-        // }
+        if (collision.collider.transform.parent.tag == "Wall") {
+            print("Collided with wall");
+            if (collision.collider.tag == "Left")
+                colWall[0] = true;
+            if (collision.collider.tag == "Right")
+                colWall[1] = true;
+            if (collision.collider.tag == "Bottom")
+                colWall[2] = true;
+            if (collision.collider.tag == "Top")
+                colWall[3] = true;
+        }
 
         //reflects ball at appropriate angle (https://en.wikipedia.org/wiki/Specular_reflection)
+        // https://gamedev.stackexchange.com/questions/28124/reflect-angle-on-pong-clone
         Vector2 d = collision.GetContact(0).normal;
         direction -= (2*d*(Vector2.Dot(d,direction)));
-        _rigidBody.velocity = direction * curSpeed;
+        _rigidBody.velocity = direction * speed;
 
         // ContactPoint2D cp = collision.GetContact(0);
         // Debug.DrawRay(cp.point, cp.normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
@@ -119,15 +141,25 @@ public class BallScript : MonoBehaviour
     }
 
     void OnCollisionExit2D(Collision2D other) {
-        StartCoroutine(stopCheckWallBounce());
-        // if (other.collider.transform.parent.tag == "Wall" && Input.anyKeyDown) {
-        //     print("Doubling speed!");
-        // }
+        // store collider only (collision object could get rewritten if this method is called
+        // before coroutine stopWallBounceWindow finished)
+        // https://forum.unity.com/threads/coroutine-collision-seems-to-overwrite-itself.1180180/
+        // Could also be solved by disabled "Reuse Colliision Callbacks" in Project Settings
+        Collider2D localCollider = other.collider;
+        StartCoroutine(stopWallBounceWindow(localCollider));
     }
 
-    private IEnumerator stopCheckWallBounce() {
-        yield return new WaitForSeconds(2f);
-        collided = false;
-        print("false");
+    private IEnumerator stopWallBounceWindow(Collider2D collider) {
+        if (collider.transform.parent.tag == "Wall") {
+            yield return new WaitForSeconds(.25f);
+            if (collider.tag == "Left")
+                colWall[0] = false;
+            if (collider.tag == "Right")
+                colWall[1] = false;
+            if (collider.tag == "Bottom")
+                colWall[2] = false;
+            if (collider.tag == "Top")
+                colWall[3] = false;
+        }
     }
 }
