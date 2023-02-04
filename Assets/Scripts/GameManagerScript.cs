@@ -7,12 +7,16 @@ using UnityEngine;
 public class GameManagerScript : MonoBehaviour
 {
     public static GameManagerScript Instance { get; private set; }
-    public static int[] scores = new int[4];
+    public GameObject PauseMenu;
+    public static int[] lives = new int[4];
     public static int ballCount = 0;
     public static int nPlayers = 4;
     public static bool[] alive;
     public static bool gameOver = false;
     public static int winner = -1;
+
+    // pausing
+    public static bool isPaused = false;
 
         private void Awake() 
     { 
@@ -35,8 +39,8 @@ public class GameManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < scores.Length; i++) {
-            scores[i] = 1;
+        for (int i = 0; i < lives.Length; i++) {
+            lives[i] = 3;
         }
         alive = new bool[nPlayers];
         for (int i = 0; i < alive.Length; i++) {
@@ -50,6 +54,13 @@ public class GameManagerScript : MonoBehaviour
         if (!gameOver) {
             isGameOver();
         }  
+
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            if (isPaused)
+                unPause();
+            else
+                pause();
+        }
     }
 
     private void isGameOver()
@@ -66,6 +77,19 @@ public class GameManagerScript : MonoBehaviour
     }
 
     public static void updateScore(int player) {
-        scores[player]--;
+        lives[player]--;
     }
+
+    public void pause() {
+        isPaused = true;
+        PauseMenu.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    public void unPause() {
+        isPaused = false;
+        PauseMenu.SetActive(false);
+        Time.timeScale = 1;
+    }
+
 }

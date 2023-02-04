@@ -28,9 +28,10 @@ public class BallSpawnerScript : MonoBehaviour
         // Debug.Log((spawnTime).ToString());
         if (spawnTime < 0)
         {
+            ballSpawnerAnimator.Play("flashingRed", -1, 1f); //reset it to invisible state (last frame)
             ballSpawnerAnimator.enabled = false;
             createBall();
-            spawnTime = 8f;
+            spawnTime = 7f;
         }
         if (spawnTime < clipLength * 3) {
             ballSpawnerAnimator.enabled = true;
@@ -40,6 +41,7 @@ public class BallSpawnerScript : MonoBehaviour
     void createBall() {
         GameObject ballClone = Instantiate(ball, transform.position, Quaternion.identity);
         GameManagerScript.ballCount++;
+        ballClone.tag = "Ball";
         ballClone.layer = 3; //"Ball"
         ballSpeed += .5f;
         ballClone.GetComponent<BallScript>().speed = ballSpeed;

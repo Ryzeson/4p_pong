@@ -85,9 +85,8 @@ public class BallScript : MonoBehaviour
         // Debug.Log(collision.collider.name + " collided with " + name);
         // Debug.Log(collision.collider.transform.parent.tag + " collided with " + name);
 
-        // if it hits a wall and dead player times button, increase ball speed
+        // if it hits a wall and dead player presses button, increase ball speed
         if (collision.collider.transform.parent.tag == "Wall") {
-            print("Collided with wall");
             if (collision.collider.tag == "Left")
                 colWall[0] = true;
             if (collision.collider.tag == "Right")

@@ -7,7 +7,7 @@ using TMPro;
 public class ScoreScript : MonoBehaviour
 {
     public TextMeshProUGUI scoreText;
-    public  GameObject paddle;
+    public GameObject paddle;
 
     enum Paddles
   {
@@ -29,19 +29,19 @@ public class ScoreScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // scoreText.SetText(GameManagerScript.scores[0].ToString());
+        // scoreText.SetText(GameManagerScript.lives[0].ToString());
         scoreText.transform.position =  Camera.main.WorldToScreenPoint(paddle.transform.position);
         if (paddle.tag == "Left") {
-            scoreText.SetText(GameManagerScript.scores[(int) Paddles.Left].ToString());
+            scoreText.SetText(GameManagerScript.lives[(int) Paddles.Left].ToString());
         }
         else if (paddle.tag == "Right") {
-            scoreText.SetText(GameManagerScript.scores[(int) Paddles.Right].ToString());
+            scoreText.SetText(GameManagerScript.lives[(int) Paddles.Right].ToString());
         }
         else if (paddle.tag == "Bottom") {
-            scoreText.SetText(GameManagerScript.scores[(int) Paddles.Bottom].ToString());
+            scoreText.SetText(GameManagerScript.lives[(int) Paddles.Bottom].ToString());
         }
         else if (paddle.tag == "Top") {
-            scoreText.SetText(GameManagerScript.scores[(int) Paddles.Top].ToString());
+            scoreText.SetText(GameManagerScript.lives[(int) Paddles.Top].ToString());
         }
     }
 }
